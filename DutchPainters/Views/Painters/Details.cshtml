@@ -1,0 +1,50 @@
+﻿@model DutchPainters.Models.Painter
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Painter</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Bio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Bio)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+<div class="row">
+    @foreach (Painting painting in Model.Paintings)
+    {
+        <div class="col-sm-4 col-lg-4 col-md-4">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h3>
+                        @*
+                            Detta ser kanske märkvärdigt ut men det enda som händer är att en <a>-tag genereras
+                            Kolla i "View source" för att se vilken HTML som genereras
+                        *@
+                        <a asp-controller="Paintings" asp-action="Details" asp-route-id="@painting.Id">@painting.Name</a>
+
+                    </h3>
+                </div>
+                <img src="@painting.ImageURL" alt="">
+            </div>
+        </div>
+    }
+</div>

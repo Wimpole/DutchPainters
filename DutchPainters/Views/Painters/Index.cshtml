@@ -1,0 +1,31 @@
+﻿@model IEnumerable<DutchPainters.Models.Painter>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Painters</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-4 col-lg-4 col-md-4">
+            <div class="thumbnail">
+                <img src="@item.PortraitURL" alt="">
+                <div class="caption">
+                    <h3>
+                        @*
+                            Detta ser kanske märkvärdigt ut men det enda som händer är att en <a>-tag genereras
+                            Kolla i "View source" för att se vilken HTML som genereras
+                        *@
+                        <a asp-controller="Painters" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+
+                    </h3>
+                </div>
+            </div>
+        </div>
+    }
+</div>
