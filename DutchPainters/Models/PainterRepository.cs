@@ -23,7 +23,7 @@ namespace DutchPainters.Models
 
         internal Painter GetPainterById(int? id)
         {
-            return _context.Painter.Include(x => x.Paintings).FirstOrDefault(m => m.Id == id);
+            return _context.Painter.Include(x => x.Paintings).Include(x => x.Epoch).FirstOrDefault(m => m.Id == id);
         }
 
         internal void AddPainter(Painter painter)
@@ -47,6 +47,16 @@ namespace DutchPainters.Models
         internal List<Painting> GetAllPaintingsByPainter(Painter painter)
         {
             return _context.Painting.Where(x => x.Painter.Id == painter.Id).ToList();
+        }
+
+        internal IEnumerable<Epoch> GetAllEpochs()
+        {
+            return _context.Epoch.ToList();
+        }
+
+        internal Epoch GetEpochById(int id)
+        {
+            return _context.Epoch.FirstOrDefault(x => x.Id == id);
         }
     }
 }

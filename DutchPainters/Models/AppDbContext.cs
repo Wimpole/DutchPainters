@@ -17,5 +17,6 @@ namespace DutchPainters.Models
         }
         public DbSet<DutchPainters.Models.Painter> Painter { get; set; }
         public DbSet<DutchPainters.Models.Painting> Painting { get; set; }
+        public DbSet<DutchPainters.Models.Epoch> Epoch { get; set; }
     }
 }

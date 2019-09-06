@@ -6,95 +6,88 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DutchPainters.Models;
-using DutchPainters.ViewModels;
 
 namespace DutchPainters.Controllers
 {
-    public class PaintersController : Controller
+    public class EpochesController : Controller
     {
-        private readonly PainterRepository _painterRepository;
+        private readonly AppDbContext _context;
 
-        public PaintersController(PainterRepository painterRepository)
+        public EpochesController(AppDbContext context)
         {
-            _painterRepository = painterRepository;
+            _context = context;
         }
 
-        // GET: Painters
-        public IActionResult Index()
+        // GET: Epoches
+        public async Task<IActionResult> Index()
         {
-            return View(_painterRepository.GetAllPainters());
+            return View(await _context.Epoch.ToListAsync());
         }
 
-        //GET: Painters/Details/5
-        public IActionResult Details(int? id)
+        // GET: Epoches/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var painter =  _painterRepository.GetPainterById(id);
-           
-            if (painter == null)
+            var epoch = await _context.Epoch
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (epoch == null)
             {
                 return NotFound();
             }
 
-            return View(painter);
+            return View(epoch);
         }
 
-        // GET: Painters/Create
+        // GET: Epoches/Create
         public IActionResult Create()
         {
-            var viewModel = new CreatePainterVm
-            {
-                AllEpochs = new SelectList(_painterRepository.GetAllEpochs(), "Id", "Name")
-            };
-
-
-            return View(viewModel);
+            return View();
         }
 
-        // POST: Painters/Create
+        // POST: Epoches/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Name,Bio,PortraitURL,Epoch")] Painter painter)
+        public async Task<IActionResult> Create([Bind("Id,Name,StartYear,EndYear,Description")] Epoch epoch)
         {
             if (ModelState.IsValid)
             {
-                painter.Epoch = _painterRepository.GetEpochById(painter.Epoch.Id);
-                _painterRepository.AddPainter(painter);
+                _context.Add(epoch);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(painter);
+            return View(epoch);
         }
 
-        // GET: Painters/Edit/5
-        public IActionResult Edit(int? id)
+        // GET: Epoches/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var painter = _painterRepository.GetPainterById(id);
-            if (painter == null)
+            var epoch = await _context.Epoch.FindAsync(id);
+            if (epoch == null)
             {
                 return NotFound();
             }
-            return View(painter);
+            return View(epoch);
         }
 
-        // POST: Painters/Edit/5
+        // POST: Epoches/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,Bio,PortraitURL,Epoch")] Painter painter)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartYear,EndYear,Description")] Epoch epoch)
         {
-            if (id != painter.Id)
+            if (id != epoch.Id)
             {
                 return NotFound();
             }
@@ -103,11 +96,12 @@ namespace DutchPainters.Controllers
             {
                 try
                 {
-                    _painterRepository.Update(painter);
+                    _context.Update(epoch);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PainterExists(painter.Id))
+                    if (!EpochExists(epoch.Id))
                     {
                         return NotFound();
                     }
@@ -118,39 +112,41 @@ namespace DutchPainters.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(painter);
+            return View(epoch);
         }
 
-        // GET: Painters/Delete/5
-        public IActionResult Delete(int? id)
+        // GET: Epoches/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var painter = _painterRepository.GetPainterById(id);
-            if (painter == null)
+            var epoch = await _context.Epoch
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (epoch == null)
             {
                 return NotFound();
             }
 
-            return View(painter);
+            return View(epoch);
         }
 
-        // POST: Painters/Delete/5
+        // POST: Epoches/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var painter = _painterRepository.GetPainterById(id);
-            _painterRepository.DeletePainter(painter);
+            var epoch = await _context.Epoch.FindAsync(id);
+            _context.Epoch.Remove(epoch);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PainterExists(int id)
+        private bool EpochExists(int id)
         {
-            return _painterRepository.GetPainterById(id) != null;
+            return _context.Epoch.Any(e => e.Id == id);
         }
     }
 }

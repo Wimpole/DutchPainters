@@ -1,4 +1,4 @@
-﻿@model DutchPainters.Models.Painter
+﻿@model DutchPainters.ViewModels.CreatePainterVm
 
 @{
     ViewData["Title"] = "Create";
@@ -11,21 +11,25 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Painter.Name" class="control-label"></label>
+                <input asp-for="Painter.Name" class="form-control" />
+                <span asp-validation-for="Painter.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bio" class="control-label"></label>
-                <input asp-for="Bio" class="form-control" />
-                <span asp-validation-for="Bio" class="text-danger"></span>
+                <label asp-for="Painter.Bio" class="control-label"></label>
+                <input asp-for="Painter.Bio" class="form-control" />
+                <span asp-validation-for="Painter.Bio" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PortraitURL" class="control-label"></label>
-                <input asp-for="PortraitURL" class="form-control" />
-                <span asp-validation-for="PortraitURL" class="text-danger"></span>
+                <label asp-for="Painter.PortraitURL" class="control-label"></label>
+                <input asp-for="Painter.PortraitURL" class="form-control" />
+                <span asp-validation-for="Painter.PortraitURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Painter.Epoch" class="control-label"></label>
+                <select asp-for="Painter.Epoch.Id" asp-items="Model.AllEpochs" class="form-control"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
